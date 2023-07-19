@@ -51,6 +51,21 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
 
   const calendarGrid = generateDays();
 
+  const getMonthFromGrid = (row: number, day: number) => {
+    let month = currentDate.getMonth();
+    if (row === 0 && day > 7) {
+      month = month - 1;
+    } else if (row > 3 && day < 14) {
+      month = month + 1;
+    }
+
+    return month;
+  };
+
+  const isCurrentMonth = (row: number, day: number) => {
+    return getMonthFromGrid(row, day) === currentDate.getMonth();
+  };
+
   return (
     <div className="flex flex-col bg-greyscale-bg-light rounded-[10px] py-4 drop-shadow-card">
       <p className="ml-6 text-base font-normal">Text</p>
@@ -92,14 +107,18 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
           </div>
 
           <div className="flex flex-col bg-red-400">
-            {calendarGrid.map((row, index) => {
+            {calendarGrid.map((row, rowNumber) => {
               return (
-                <div key={index} className="flex flex-row justify-between">
+                <div key={rowNumber} className="flex flex-row justify-between">
                   {row.map((day, index) => {
                     return (
                       <button
                         key={index}
-                        className="w-9 h-9 mx-[3px] text-sm font-normal first:m-0 last:m-0 rounded-full bg-zinc-600 hover:bg-white hover:text-greyscale-bg-darker"
+                        className={`w-9 h-9 mx-[3px] text-sm font-normal first:m-0 last:m-0 rounded-full bg-zinc-600 hover:bg-white hover:text-greyscale-bg-darker
+                          ${
+                            !isCurrentMonth(rowNumber, day) &&
+                            'text-greyscale-500'
+                          }`}
                       >
                         {day}
                       </button>
