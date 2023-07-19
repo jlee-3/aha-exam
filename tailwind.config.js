@@ -12,7 +12,17 @@ module.exports = {
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
+      dropShadow: {
+        card: '4px 4px 20px rgba(0, 0, 0, 0.30)',
+      },
+      colors: {
+        greyscale: {
+          500: '#929292',
+          'bg-light': '#1B1B1B',
+          'bg-darker': '#080808',
+        },
+      },
     },
   },
   plugins: [],
-}
+};

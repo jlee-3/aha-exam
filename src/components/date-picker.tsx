@@ -52,11 +52,11 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
   const calendarGrid = generateDays();
 
   return (
-    <div className="flex flex-col bg-[#1B1B1B] rounded-[10px] py-4">
-      <p className="ml-6 text-base">Text</p>
-      <p className="ml-6">{dateTitle}</p>
+    <div className="flex flex-col bg-greyscale-bg-light rounded-[10px] py-4 drop-shadow-card">
+      <p className="ml-6 text-base font-normal">Text</p>
+      <p className="ml-6 text-[32px] leading-[44px] font-bold">{dateTitle}</p>
 
-      <div className="flex flex-row justify-between">
+      <div className="flex flex-row justify-between mt-[15px]">
         <button>
           <Image
             src="/arrow-left.svg"
@@ -65,8 +65,8 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
             height={48}
           />
         </button>
-        <button>{monthYear}</button>
-        <button>
+        <button className="text-base font-normal">{monthYear}</button>
+        <button className="bg-red-400">
           <Image
             src="/arrow-right.svg"
             alt="Arrow Right"
@@ -77,42 +77,48 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
       </div>
 
       {dayHeader && calendarGrid && (
-        <table className="border-collapse border-spacing-0 mx-4">
-          <thead>
-            <tr>
-              {dayHeader.map((day, index) => {
-                return (
-                  <td key={index} className="text-center bg-slate-500">
-                    {day}
-                  </td>
-                );
-              })}
-            </tr>
-          </thead>
-
-          <tbody>
-            {calendarGrid.map((row, index) => {
+        <div className="mx-4 mt-2">
+          <div className="mb-[13px] flex flex-row justify-between">
+            {dayHeader.map((day, index) => {
               return (
-                <tr key={index}>
-                  {row.map((day, index) => {
-                    return (
-                      <td key={index}>
-                        <button className="w-9 h-9 border-none rounded-full bg-zinc-600 m-[3px] hover:bg-white">
-                          {day}
-                        </button>
-                      </td>
-                    );
-                  })}
-                </tr>
+                <div
+                  key={index}
+                  className="text-[11px] leading-[13px] text-center w-9 text-greyscale-500 mb-3 bg-slate-500"
+                >
+                  {day}
+                </div>
               );
             })}
-          </tbody>
-        </table>
+          </div>
+
+          <div className="flex flex-col bg-red-400">
+            {calendarGrid.map((row, index) => {
+              return (
+                <div key={index} className="flex flex-row justify-between">
+                  {row.map((day, index) => {
+                    return (
+                      <button
+                        key={index}
+                        className="w-9 h-9 mx-[3px] text-sm font-normal first:m-0 last:m-0 rounded-full bg-zinc-600 hover:bg-white hover:text-greyscale-bg-darker"
+                      >
+                        {day}
+                      </button>
+                    );
+                  })}
+                </div>
+              );
+            })}
+          </div>
+        </div>
       )}
 
       <div className="flex flex-row self-end mr-[27px] mt-3">
-        <button className="px-4 py-2 text-sm mr-[38px]">Cancel</button>
-        <button className="px-4 py-2 text-sm">Ok</button>
+        <button className="px-4 py-2 text-sm mr-[38px] border border-purple-600">
+          Cancel
+        </button>
+        <button className="px-4 py-2 text-sm border border-purple-600">
+          Ok
+        </button>
       </div>
     </div>
   );
