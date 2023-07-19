@@ -6,18 +6,18 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
   const [selectedDate, setSelectedDate] = useState(currentDate);
 
   const dateTitle =
-    moment(currentDate).format('MMM') +
+    moment(selectedDate).format('MMM') +
     ', ' +
-    moment(currentDate).format('YYYY');
+    moment(selectedDate).format('YYYY');
 
   const monthYear =
-    moment(currentDate).format('MMMM') +
+    moment(selectedDate).format('MMMM') +
     ' ' +
-    moment(currentDate).format('YYYY');
+    moment(selectedDate).format('YYYY');
 
   const dayHeader = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
-  const generateDays = () => {
+  const generateCalendarGrid = () => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth() + 1;
     const daysOfMonth = new Date(year, month, 0).getDate();
@@ -52,7 +52,7 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
     return daysGrid;
   };
 
-  const calendarGrid = generateDays();
+  const calendarGrid = generateCalendarGrid();
 
   const getMonthFromGrid = (row: number, day: number) => {
     let month = currentDate.getMonth();
@@ -107,13 +107,28 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
     // })
   };
 
+  const changeMonth = (month: number) => {
+    let year = currentDate.getFullYear();
+    let targetMonth = month;
+
+    if (month === 12) {
+      targetMonth = 0;
+      setSelectedDate(new Date(currentDate?.setFullYear(year + 1)));
+    } else if (month === -1) {
+      targetMonth = 11;
+      setSelectedDate(new Date(currentDate?.setFullYear(year - 1)));
+    }
+
+    setSelectedDate(new Date(currentDate?.setMonth(targetMonth)));
+  };
+
   return (
     <div className="flex flex-col bg-greyscale-bg-light rounded-[10px] py-4 drop-shadow-card">
       <p className="ml-6 text-base font-normal">Text</p>
       <p className="ml-6 text-[32px] leading-[44px] font-bold">{dateTitle}</p>
 
       <div className="flex flex-row justify-between mt-[15px]">
-        <button>
+        <button onClick={() => changeMonth(currentDate.getMonth() - 1)}>
           <Image
             src="/arrow-left.svg"
             alt="Arrow Left"
@@ -122,7 +137,7 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
           />
         </button>
         <button className="text-base font-normal">{monthYear}</button>
-        <button>
+        <button onClick={() => changeMonth(currentDate.getMonth() + 1)}>
           <Image
             src="/arrow-right.svg"
             alt="Arrow Right"
