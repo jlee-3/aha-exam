@@ -18,30 +18,30 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
   const dayHeader = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
   const generateCalendarGrid = () => {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth() + 1;
+    const year = selectedDate.getFullYear();
+    const month = selectedDate.getMonth() + 1;
     const daysOfMonth = new Date(year, month, 0).getDate();
     const startDay = new Date(year, month - 1, 1).getDay();
-    const daysGrid: number[][] = [];
+    const calendarGrid: number[][] = [];
 
     let day = 1;
     let elementNumber = 0;
     for (let row = 0; row < 6; row++) {
-      daysGrid.push([]);
+      calendarGrid.push([]);
 
       for (let dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
         if (elementNumber >= startDay && day <= daysOfMonth) {
-          daysGrid[row][dayOfWeek] = day;
+          calendarGrid[row][dayOfWeek] = day;
           day++;
         } else if (elementNumber < startDay) {
-          daysGrid[row][dayOfWeek] = new Date(
+          calendarGrid[row][dayOfWeek] = new Date(
             year,
             month - 1,
             -startDay + elementNumber + 1
           ).getDate();
         } else {
           day = 1;
-          daysGrid[row][dayOfWeek] = day;
+          calendarGrid[row][dayOfWeek] = day;
           day++;
         }
 
@@ -49,13 +49,13 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
       }
     }
 
-    return daysGrid;
+    return calendarGrid;
   };
 
   const calendarGrid = generateCalendarGrid();
 
   const getMonthFromGrid = (row: number, day: number) => {
-    let month = currentDate.getMonth();
+    let month = selectedDate.getMonth();
     if (row === 0 && day > 7) {
       month = month - 1;
     } else if (row > 3 && day < 14) {
@@ -66,7 +66,7 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
   };
 
   const isCurrentMonth = (row: number, day: number) => {
-    return getMonthFromGrid(row, day) === currentDate.getMonth();
+    return getMonthFromGrid(row, day) === selectedDate.getMonth();
   };
 
   const isSelectedDate = (row: number, day: number, date: Date) => {
@@ -74,7 +74,7 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
       date &&
       day === date.getDate() &&
       getMonthFromGrid(row, day) === date.getMonth() &&
-      currentDate.getFullYear() === date.getFullYear()
+      selectedDate.getFullYear() === date.getFullYear()
     );
   };
 
@@ -85,41 +85,34 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
     return (
       day === today.getDate() &&
       displayMonth === today.getMonth() &&
-      displayMonth === currentDate.getMonth() &&
-      currentDate.getFullYear() === today.getFullYear()
+      displayMonth === selectedDate.getMonth() &&
+      selectedDate.getFullYear() === today.getFullYear()
     );
   };
 
-  const handleDayClick = (row: number, day: number) => {
-    // const month = getMonthFromGrid(row, day)
-    // if (month !== currentDate.getMonth()) {
-    //   this.selectedDate = new Date(this.currentDate?.setMonth(month))
-    //   if (this.inputMode === 'single') {
-    //     this.startDate = new Date(this.currentDate?.setMonth(month))
-    //   }
-    //   this.changeMonth(month)
-    // }
-
-    setSelectedDate(new Date(currentDate?.setDate(day)));
-
-    // this.$emit('setDate', {
-    //   date: this.selectedDate
-    // })
-  };
-
   const changeMonth = (month: number) => {
-    let year = currentDate.getFullYear();
+    let year = selectedDate.getFullYear();
     let targetMonth = month;
 
     if (month === 12) {
       targetMonth = 0;
-      setSelectedDate(new Date(currentDate?.setFullYear(year + 1)));
+      setSelectedDate(new Date(selectedDate?.setFullYear(year + 1)));
     } else if (month === -1) {
       targetMonth = 11;
-      setSelectedDate(new Date(currentDate?.setFullYear(year - 1)));
+      setSelectedDate(new Date(selectedDate?.setFullYear(year - 1)));
     }
 
-    setSelectedDate(new Date(currentDate?.setMonth(targetMonth)));
+    setSelectedDate(new Date(selectedDate?.setMonth(targetMonth)));
+  };
+
+  const handleDayClick = (row: number, day: number) => {
+    const month = getMonthFromGrid(row, day);
+    if (month !== selectedDate.getMonth()) {
+      setSelectedDate(new Date(selectedDate?.setMonth(month)));
+      changeMonth(month);
+    }
+
+    setSelectedDate(new Date(selectedDate?.setDate(day)));
   };
 
   return (
@@ -128,7 +121,7 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
       <p className="ml-6 text-[32px] leading-[44px] font-bold">{dateTitle}</p>
 
       <div className="flex flex-row justify-between mt-[15px]">
-        <button onClick={() => changeMonth(currentDate.getMonth() - 1)}>
+        <button onClick={() => changeMonth(selectedDate.getMonth() - 1)}>
           <Image
             src="/arrow-left.svg"
             alt="Arrow Left"
@@ -137,7 +130,7 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
           />
         </button>
         <button className="text-base font-normal">{monthYear}</button>
-        <button onClick={() => changeMonth(currentDate.getMonth() + 1)}>
+        <button onClick={() => changeMonth(selectedDate.getMonth() + 1)}>
           <Image
             src="/arrow-right.svg"
             alt="Arrow Right"
