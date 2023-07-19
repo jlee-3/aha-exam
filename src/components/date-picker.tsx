@@ -1,7 +1,10 @@
 import Image from 'next/image';
 import moment from 'moment';
+import { useState } from 'react';
 
 export default function DatePicker({ currentDate }: { currentDate: Date }) {
+  const [selectedDate, setSelectedDate] = useState(currentDate);
+
   const dateTitle =
     moment(currentDate).format('MMM') +
     ', ' +
@@ -66,6 +69,32 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
     return getMonthFromGrid(row, day) === currentDate.getMonth();
   };
 
+  const isSelectedDate = (row: number, day: number, date: Date) => {
+    return (
+      date &&
+      day === date.getDate() &&
+      getMonthFromGrid(row, day) === date.getMonth() &&
+      currentDate.getFullYear() === date.getFullYear()
+    );
+  };
+
+  const handleDayClick = (row: number, day: number) => {
+    // const month = getMonthFromGrid(row, day)
+    // if (month !== currentDate.getMonth()) {
+    //   this.selectedDate = new Date(this.currentDate?.setMonth(month))
+    //   if (this.inputMode === 'single') {
+    //     this.startDate = new Date(this.currentDate?.setMonth(month))
+    //   }
+    //   this.changeMonth(month)
+    // }
+
+    setSelectedDate(new Date(currentDate?.setDate(day)));
+
+    // this.$emit('setDate', {
+    //   date: this.selectedDate
+    // })
+  };
+
   return (
     <div className="flex flex-col bg-greyscale-bg-light rounded-[10px] py-4 drop-shadow-card">
       <p className="ml-6 text-base font-normal">Text</p>
@@ -81,7 +110,7 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
           />
         </button>
         <button className="text-base font-normal">{monthYear}</button>
-        <button className="bg-red-400">
+        <button>
           <Image
             src="/arrow-right.svg"
             alt="Arrow Right"
@@ -98,7 +127,7 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
               return (
                 <div
                   key={index}
-                  className="text-[11px] leading-[13px] text-center w-9 text-greyscale-500 mb-3 bg-slate-500"
+                  className="text-[11px] leading-[13px] text-center w-9 text-greyscale-500 mb-3"
                 >
                   {day}
                 </div>
@@ -106,7 +135,7 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
             })}
           </div>
 
-          <div className="flex flex-col bg-red-400">
+          <div className="flex flex-col">
             {calendarGrid.map((row, rowNumber) => {
               return (
                 <div key={rowNumber} className="flex flex-row justify-between">
@@ -114,11 +143,17 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
                     return (
                       <button
                         key={index}
-                        className={`w-9 h-9 mx-[3px] text-sm font-normal first:m-0 last:m-0 rounded-full bg-zinc-600 hover:bg-white hover:text-greyscale-bg-darker
+                        onClick={() => handleDayClick(rowNumber, day)}
+                        className={`w-9 h-9 mx-[3px] text-sm font-normal first:m-0 last:m-0 rounded-full hover:bg-white hover:text-greyscale-bg-darker
                           ${
                             !isCurrentMonth(rowNumber, day) &&
                             'text-greyscale-500'
-                          }`}
+                          }
+                          ${
+                            isSelectedDate(rowNumber, day, selectedDate) &&
+                            'bg-primary-main'
+                          }
+                          `}
                       >
                         {day}
                       </button>
@@ -132,12 +167,8 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
       )}
 
       <div className="flex flex-row self-end mr-[27px] mt-3">
-        <button className="px-4 py-2 text-sm mr-[38px] border border-purple-600">
-          Cancel
-        </button>
-        <button className="px-4 py-2 text-sm border border-purple-600">
-          Ok
-        </button>
+        <button className="px-4 py-2 text-sm mr-[38px]">Cancel</button>
+        <button className="px-4 py-2 text-sm">Ok</button>
       </div>
     </div>
   );
