@@ -57,12 +57,19 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
 
   // calculates the 20 year window a given year resides in
   const generateYearGrid = (inputYear: number) => {
-    const yearLastTwoDigits = Number(String(inputYear).slice(-2));
-    const century = Number(String(inputYear).slice(0, 2)); // e.g. 21st century
-    const startYear = Math.floor(yearLastTwoDigits / 20) * 20 + century * 100;
+    const yearLastTwoDigits = Math.max(Number(String(inputYear).slice(-2)), 0);
+    const century = Math.max(Math.floor(inputYear / 100), 0); // e.g. 21st century
+    let startDecade = Math.floor(yearLastTwoDigits / 20);
 
+    // for the last year in the 20 year window, avoid jumping to the next window
+    if (inputYear > 0 && inputYear % 20 === 0) {
+      startDecade--;
+    }
+
+    const startYear = startDecade * 20 + century * 100;
     let year = startYear + 1;
     const yearGrid: number[][] = [];
+
     for (let row = 0; row < 5; row++) {
       yearGrid[row] = [];
       for (let col = 0; col < 4; col++) {
@@ -127,6 +134,19 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
     setSelectedDate(new Date(selectedDate?.setMonth(targetMonth)));
   };
 
+  const handleArrowClick = (direction: -1 | 1) => {
+    if (shouldShowCalendar) {
+      changeMonth(selectedDate.getMonth() + direction);
+    } else {
+      const selectedYear = selectedDate.getFullYear();
+      // add 20 years to the current year to shift to the next 20 year window
+      let newYear = selectedYear + direction * 20;
+      if (newYear > 0) {
+        setSelectedDate(new Date(selectedDate?.setFullYear(newYear)));
+      }
+    }
+  };
+
   const handleDayClick = (row: number, day: number) => {
     const month = getMonthFromGrid(row, day);
     if (month !== selectedDate.getMonth()) {
@@ -137,13 +157,18 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
     setSelectedDate(new Date(selectedDate?.setDate(day)));
   };
 
+  const handleYearClick = (year: number) => {
+    setSelectedDate(new Date(selectedDate?.setFullYear(year)));
+    setShouldShowCalendar(true);
+  };
+
   return (
     <div className="flex flex-col bg-greyscale-bg-light rounded-[10px] py-4 drop-shadow-card">
       <p className="ml-6 text-base font-normal">Text</p>
       <p className="ml-6 text-[32px] leading-[44px] font-bold">{dateTitle}</p>
 
       <div className="flex flex-row w-[320px] justify-between mt-[15px]">
-        <button onClick={() => changeMonth(selectedDate.getMonth() - 1)}>
+        <button onClick={() => handleArrowClick(-1)}>
           <Image
             src="/arrow-left.svg"
             alt="Arrow Left"
@@ -155,9 +180,9 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
           onClick={() => setShouldShowCalendar(!shouldShowCalendar)}
           className="text-base font-normal"
         >
-          {monthYear}
+          {shouldShowCalendar ? monthYear : selectedDate.getFullYear()}
         </button>
-        <button onClick={() => changeMonth(selectedDate.getMonth() + 1)}>
+        <button onClick={() => handleArrowClick(1)}>
           <Image
             src="/arrow-right.svg"
             alt="Arrow Right"
@@ -229,8 +254,11 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
                   return (
                     <button
                       key={yearIndex}
-                      className={`w-[61px] font-normal text-base rounded-sm hover:bg-white hover:text-greyscale-bg-dark bg-primary-main
-                `}
+                      onClick={() => handleYearClick(year)}
+                      className={`w-[61px] font-normal text-base rounded-sm hover:bg-white hover:text-greyscale-bg-dark
+                      ${
+                        selectedDate.getFullYear() === year && 'bg-primary-main'
+                      }`}
                     >
                       {year}
                     </button>
