@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 export default function DatePicker({ currentDate }: { currentDate: Date }) {
   const [selectedDate, setSelectedDate] = useState(currentDate);
+  const [shouldShowCalendar, setShouldShowCalendar] = useState(true);
 
   const dateTitle =
     moment(selectedDate).format('MMM') +
@@ -53,6 +54,27 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
   };
 
   const calendarGrid = generateCalendarGrid();
+
+  // calculates the 20 year window a given year resides in
+  const generateYearGrid = (inputYear: number) => {
+    const yearLastTwoDigits = Number(String(inputYear).slice(-2));
+    const century = Number(String(inputYear).slice(0, 2)); // e.g. 21st century
+    const startYear = Math.floor(yearLastTwoDigits / 20) * 20 + century * 100;
+
+    let year = startYear + 1;
+    const yearGrid: number[][] = [];
+    for (let row = 0; row < 5; row++) {
+      yearGrid[row] = [];
+      for (let col = 0; col < 4; col++) {
+        yearGrid[row][col] = year;
+        year++;
+      }
+    }
+
+    return yearGrid;
+  };
+
+  const yearGrid = generateYearGrid(selectedDate.getFullYear());
 
   const getMonthFromGrid = (row: number, day: number) => {
     let month = selectedDate.getMonth();
@@ -120,7 +142,7 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
       <p className="ml-6 text-base font-normal">Text</p>
       <p className="ml-6 text-[32px] leading-[44px] font-bold">{dateTitle}</p>
 
-      <div className="flex flex-row justify-between mt-[15px]">
+      <div className="flex flex-row w-[320px] justify-between mt-[15px]">
         <button onClick={() => changeMonth(selectedDate.getMonth() - 1)}>
           <Image
             src="/arrow-left.svg"
@@ -129,7 +151,12 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
             height={48}
           />
         </button>
-        <button className="text-base font-normal">{monthYear}</button>
+        <button
+          onClick={() => setShouldShowCalendar(!shouldShowCalendar)}
+          className="text-base font-normal"
+        >
+          {monthYear}
+        </button>
         <button onClick={() => changeMonth(selectedDate.getMonth() + 1)}>
           <Image
             src="/arrow-right.svg"
@@ -140,9 +167,9 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
         </button>
       </div>
 
-      {dayHeader && calendarGrid && (
+      {shouldShowCalendar && dayHeader && calendarGrid && (
         <div className="mx-4 mt-2">
-          <div className="mb-[13px] flex flex-row justify-between">
+          <div className="flex flex-row justify-between">
             {dayHeader.map((day, index) => {
               return (
                 <div
@@ -190,9 +217,37 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
         </div>
       )}
 
-      <div className="flex flex-row self-end mr-[27px] mt-3">
+      {!shouldShowCalendar && (
+        <div className="w-[271px] mx-6 mt-[18px]">
+          {yearGrid.map((row, rowNumber) => {
+            return (
+              <div
+                key={rowNumber}
+                className="flex flex-row justify-between my-6 first:mt-0 last:mb-0"
+              >
+                {row.map((year, yearIndex) => {
+                  return (
+                    <button
+                      key={yearIndex}
+                      className={`w-[61px] font-normal text-base rounded-sm hover:bg-white hover:text-greyscale-bg-dark bg-primary-main
+                `}
+                    >
+                      {year}
+                    </button>
+                  );
+                })}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      <div
+        className={`flex flex-row self-end mr-[27px]
+        ${shouldShowCalendar ? 'mt-3' : 'mt-[27px]'}`}
+      >
         <button className="px-4 py-2 text-sm mr-[38px]">Cancel</button>
-        <button className="px-4 py-2 text-sm">Ok</button>
+        <button className="px-4 py-2 text-sm">OK</button>
       </div>
     </div>
   );

@@ -20,6 +20,7 @@ module.exports = {
           500: '#929292',
           'bg-light': '#1B1B1B',
           'bg-darker': '#080808',
+          'bg-dark': '#181818',
         },
         primary: {
           main: '#00A3FF',
