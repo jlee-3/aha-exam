@@ -78,6 +78,18 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
     );
   };
 
+  const isToday = (row: number, day: number) => {
+    const today = new Date();
+    const displayMonth = getMonthFromGrid(row, day);
+
+    return (
+      day === today.getDate() &&
+      displayMonth === today.getMonth() &&
+      displayMonth === currentDate.getMonth() &&
+      currentDate.getFullYear() === today.getFullYear()
+    );
+  };
+
   const handleDayClick = (row: number, day: number) => {
     // const month = getMonthFromGrid(row, day)
     // if (month !== currentDate.getMonth()) {
@@ -152,6 +164,10 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
                           ${
                             isSelectedDate(rowNumber, day, selectedDate) &&
                             'bg-primary-main'
+                          }
+                          ${
+                            isToday(rowNumber, day) &&
+                            'border border-primary-main'
                           }
                           `}
                       >
