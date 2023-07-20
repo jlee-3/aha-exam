@@ -171,9 +171,11 @@ export default function DatePicker({
   };
 
   return (
-    <div className="w-[320px] flex flex-col bg-greyscale-bg-light rounded-[10px] py-4 mt-[14px] drop-shadow-card font-inter">
-      <p className="ml-6 text-base font-normal">Text</p>
-      <p className="ml-6 text-[32px] leading-[44px] font-bold">{dateTitle}</p>
+    <div className="w-[320px] flex flex-col bg-greyscale-bg-light rounded-[10px] py-4 pt-[17px] mt-[14px] drop-shadow-card font-inter">
+      <div id="header" className="ml-6 w-max">
+        <p className="mb-1 text-base font-normal">Text</p>
+        <p className="text-[32px] leading-[44px] font-bold">{dateTitle}</p>
+      </div>
 
       <div className="flex flex-row w-[320px] justify-between mt-[15px]">
         <button onClick={() => handleArrowClick(-1)}>
@@ -186,7 +188,7 @@ export default function DatePicker({
         </button>
         <button
           onClick={() => setShouldShowCalendar(!shouldShowCalendar)}
-          className="text-base font-normal"
+          className="text-base font-normal pt-[9px] pb-[15px] ml-[1px]"
         >
           {shouldShowCalendar ? monthYear : selectedDate.getFullYear()}
         </button>
@@ -207,7 +209,7 @@ export default function DatePicker({
               return (
                 <div
                   key={index}
-                  className="text-[11px] leading-[13px] text-center w-9 text-greyscale-500 mb-3"
+                  className="text-[11px] leading-[13px] text-center w-9 text-greyscale-500 mb-[11.5px]"
                 >
                   {day}
                 </div>
@@ -224,7 +226,7 @@ export default function DatePicker({
                       <button
                         key={index}
                         onClick={() => handleDayClick(rowNumber, day)}
-                        className={`w-9 h-9 mx-[3px] text-sm font-normal first:m-0 last:m-0 rounded-full hover:bg-white hover:text-greyscale-bg-darker
+                        className={`w-9 h-9 mx-[3px] first:ml-0 last:mr-0 text-sm font-normal tracking-[0.15px] rounded-full hover:bg-white hover:text-greyscale-bg-darker
                           ${
                             !isCurrentMonth(rowNumber, day) &&
                             'text-greyscale-500'
@@ -279,23 +281,23 @@ export default function DatePicker({
       )}
 
       <div
-        className={`flex flex-row self-end mr-[27px]
+        className={`flex flex-row self-end mr-[27.5px] mb-[0.5px]
         ${shouldShowCalendar ? 'mt-3' : 'mt-[27px]'}`}
       >
         <button
-          className="px-4 py-2 text-sm mr-[38px]"
+          className="px-4 py-2 text-sm font-[600] leading-[24px] mr-[38px]"
           onClick={() => onClose()}
         >
-          Cancel
+          <div className="w-12">Cancel</div>
         </button>
         <button
-          className="px-4 py-2 text-sm"
+          className="px-4 py-2 text-sm font-[600] leading-[24px]"
           onClick={() => {
             onFinish(selectedDate);
             onClose();
           }}
         >
-          OK
+          <div className="w-[21px]">OK</div>
         </button>
       </div>
     </div>

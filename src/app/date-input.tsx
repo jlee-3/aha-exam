@@ -25,7 +25,7 @@ export default function DateInput({ label }: { label: string }) {
         }`}
         onClick={() => setShowDatePicker(true)}
       >
-        <div className="absolute z-10 -top-[8px] text-xs tracking-[0.4px] leading-[18px] px-1 bg-greyscale-bg-dark">
+        <div className="absolute z-10 -top-[7.5px] text-xs font-normal tracking-[0.4px] leading-[18px] px-1 bg-greyscale-bg-dark">
           {label}
         </div>
         <div
