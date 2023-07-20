@@ -1,14 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import DatePicker from '../components/date-picker';
+import DateInput from './date-input';
 
 export default function Home() {
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const startingDate = new Date();
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24 bg-slate-400">
+    <main className="flex min-h-screen flex-col p-24 bg-greyscale-bg-dark">
       <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
         <button
           onClick={() => setShowDatePicker(!showDatePicker)}
@@ -18,7 +17,7 @@ export default function Home() {
         </button>
       </div>
 
-      <div>{showDatePicker && <DatePicker currentDate={startingDate} />}</div>
+      <DateInput label={'Birthday'} />
     </main>
   );
 }

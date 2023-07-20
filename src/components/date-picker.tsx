@@ -2,7 +2,15 @@ import Image from 'next/image';
 import moment from 'moment';
 import { useState } from 'react';
 
-export default function DatePicker({ currentDate }: { currentDate: Date }) {
+export default function DatePicker({
+  currentDate,
+  onFinish,
+  onClose,
+}: {
+  currentDate: Date;
+  onFinish: (selectedDate: Date) => void;
+  onClose: () => void;
+}) {
   const [selectedDate, setSelectedDate] = useState(currentDate);
   const [shouldShowCalendar, setShouldShowCalendar] = useState(true);
 
@@ -163,7 +171,7 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
   };
 
   return (
-    <div className="flex flex-col bg-greyscale-bg-light rounded-[10px] py-4 drop-shadow-card">
+    <div className="w-[320px] flex flex-col bg-greyscale-bg-light rounded-[10px] py-4 mt-[14px] drop-shadow-card font-inter">
       <p className="ml-6 text-base font-normal">Text</p>
       <p className="ml-6 text-[32px] leading-[44px] font-bold">{dateTitle}</p>
 
@@ -274,8 +282,21 @@ export default function DatePicker({ currentDate }: { currentDate: Date }) {
         className={`flex flex-row self-end mr-[27px]
         ${shouldShowCalendar ? 'mt-3' : 'mt-[27px]'}`}
       >
-        <button className="px-4 py-2 text-sm mr-[38px]">Cancel</button>
-        <button className="px-4 py-2 text-sm">OK</button>
+        <button
+          className="px-4 py-2 text-sm mr-[38px]"
+          onClick={() => onClose()}
+        >
+          Cancel
+        </button>
+        <button
+          className="px-4 py-2 text-sm"
+          onClick={() => {
+            onFinish(selectedDate);
+            onClose();
+          }}
+        >
+          OK
+        </button>
       </div>
     </div>
   );

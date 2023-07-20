@@ -7,6 +7,10 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        ubuntu: 'var(--font-ubuntu)',
+        inter: 'var(--font-inter)',
+      },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':
@@ -18,6 +22,8 @@ module.exports = {
       colors: {
         greyscale: {
           500: '#929292',
+          white: '#FFF',
+          'white-50': 'rgba(255, 255, 255, 0.50)',
           'bg-light': '#1B1B1B',
           'bg-darker': '#080808',
           'bg-dark': '#181818',
