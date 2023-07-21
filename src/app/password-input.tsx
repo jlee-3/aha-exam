@@ -5,21 +5,34 @@ export default function PasswordInput({ label }: { label: string }) {
   const [isInputting, setIsInputting] = useState(false);
   const [passString, setPassString] = useState('');
   const [inputMask, setInputMask] = useState('');
+  const [key, setKey] = useState('');
 
   const handleInputChange = (e: any) => {
-    const input = e.target.value;
-    let savedInput;
+    const cursorPosition = e.target.selectionStart;
 
-    if (input.length < passString.length) {
-      savedInput = passString.slice(0, input.length);
-    } else {
-      savedInput = passString + input.slice(-1);
+    // prevent edits mid-string to preserve simplicity of masking function
+    if (cursorPosition > passString.length || key === 'Backspace') {
+      const input = e.target.value;
+      let savedInput;
+
+      // assume all edits occur at the end of the input
+      if (input.length < passString.length) {
+        savedInput = passString.slice(0, input.length);
+      } else {
+        savedInput = passString + input.slice(-1);
+      }
+
+      setPassString(savedInput);
+      const mask = '*'.repeat(e.target.value.length);
+      setInputMask(mask);
     }
-
-    setPassString(savedInput);
-    const mask = '*'.repeat(e.target.value.length);
-    setInputMask(mask);
   };
+
+  const handleKeyPress = (e: any) => {
+    setKey(e.key);
+  };
+
+  // console.log('passString: ', passString);
 
   return (
     <div>
@@ -36,6 +49,7 @@ export default function PasswordInput({ label }: { label: string }) {
           placeholder="Password"
           value={inputMask}
           onChange={handleInputChange}
+          onKeyDown={handleKeyPress}
           onFocus={() => setIsInputting(true)}
           onBlur={() => setIsInputting(false)}
         />
