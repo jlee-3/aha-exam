@@ -22,6 +22,7 @@ module.exports = {
       colors: {
         greyscale: {
           500: '#929292',
+          800: '#242424',
           white: '#FFF',
           'white-50': 'rgba(255, 255, 255, 0.50)',
           'bg-light': '#1B1B1B',
