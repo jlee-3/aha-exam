@@ -33,7 +33,7 @@ export default function PasswordInput({ label }: { label: string }) {
   };
 
   const validators: { [index: string]: string } = {
-    upperCase: 'Have at lease one uppercase letter',
+    upperCase: 'Have at least one uppercase letter',
     lowerCase: 'Have at least one lowercase letter',
     number: 'Have at least one number',
     special: 'Have at least one special character (!@#$...etc)',
@@ -100,7 +100,10 @@ export default function PasswordInput({ label }: { label: string }) {
                   width={24}
                   height={24}
                 />
-                <div className=" py-2 pl-[10px] pr-4 font-ubuntu text-sm font-normal leading-[21px] tracking-[0.25px]">
+                <div
+                  className={`pl-[10px] pr-4 w-full flex items-center font-ubuntu text-sm font-normal leading-[21px] tracking-[0.25px]
+              ${key === 'special' ? 'h-[50px]' : 'h-[40px]'}`}
+                >
                   {validators[key]}
                 </div>
               </div>
